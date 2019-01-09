@@ -14,8 +14,12 @@ def get_jsonparsed_data(my_url):
 
 filename = "sneakerData.csv"
 f = open(filename,"w+")
-headers = "Brand, Colorway, Gender, Name, Title, Release Date, Retail Price, Below Retail, Shoe\n"
+headers = "brand,colorway,gender,name,title,releaseDate,retailPrice,belowRetail,shoe,missingData\n"
 f.write(headers)
+
+groups = list(headers.split(","))
+groups = [x.strip(' ') for x in groups]
+del groups[-1]
 
 headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
                       'AppleWebKit/537.11 (KHTML, like Gecko) '
@@ -30,16 +34,34 @@ url = ("https://stockx.com/api/browse?page=1&productCategory=sneakers")
 parsed_data = get_jsonparsed_data(url)
 page_data = parsed_data['Pagination']
 
+
+foo = 0
 print("Collecting Data")
-for n in range(int(page_data['limit'])):
-    url = ("https://stockx.com/api/browse?page="+str(n)+"&productCategory=sneakers")
+for x in range(int(page_data['limit'])):
+    url = ("https://stockx.com/api/browse?page="+str(x)+"&productCategory=sneakers")
 
     parsed_data = get_jsonparsed_data(url)
 
     products = parsed_data['Products']
     for p in products:
-        toWrite = p['brand']+p['colorway']+p['gender']+p['name']+p['title']+p['releaseDate']+str(p['retailPrice'])+str(p['belowRetail'])+p['shoe']+"\n"
-        print(toWrite)
-        f.write(toWrite)
-print("Data Collection Complete. See sneakerData.csv")
+        toWrite = ""
+        missingData = False
+        for g in groups:
+            try:
+                f.write(str(p[g])+",")
+            except TypeError:
+                f.write("N/A,")
+                missingData = True
+        if missingData:
+            f.write("True\n")
+            foo += 1
+            print("error"+str(foo))
+        else:
+            f.write("False\n")
+print("Data Collection Complete. "+str(foo)+" NoneType Entries. See sneakerData.csv")
     #print(page_data['limit'])
+
+
+'''
+Utilize --market-- object identifier for price stuff
+'''
