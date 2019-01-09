@@ -12,9 +12,9 @@ def get_jsonparsed_data(my_url):
     data = response.read().decode("utf-8")
     return json.loads(data)
 
-filename = "sneakerData.csv"
+filename = "marketData.csv"
 f = open(filename,"w+")
-headers = "brand,colorway,gender,name,title,releaseDate,retailPrice,belowRetail,shoe,missingData\n"
+headers = "title,lowestAsk,lowestAskSize,numberOfAsks,salesThisPeriod,salesLastPeriod,highestBid,highestBidSize,numberOfBids,annualHigh,annualLow,deadstockRangeLow,deadstockRangeHigh,volatility,deadstockSold,pricePremium,averageDeadstockPrice,lastSale,salesLast72Hours,changeValue,changePercentage,totalDollars,deadstockSoldRank,pricePremiumRank,averageDeadstockPriceRank,missingData\n"
 f.write(headers)
 
 groups = list(headers.split(","))
@@ -35,6 +35,7 @@ url = ("https://stockx.com/api/browse?page=1&productCategory=sneakers")
 parsed_data = get_jsonparsed_data(url)
 page_data = parsed_data['Pagination']
 
+
 foo = 0
 print("Collecting Data")
 for x in range(int(page_data['limit'])):
@@ -43,14 +44,19 @@ for x in range(int(page_data['limit'])):
     parsed_data = get_jsonparsed_data(url)
 
     products = parsed_data['Products']
-    for p in products:
-        toWrite = ""
+
+    for marketData in products:
+        foo = marketData['market']
         missingData = False
-        for g in groups:
+        for k in groups:
             try:
-                f.write(str(p[g])+",")
+                if (k=="title"):
+                    f.write(marketData['title']+",")
+                    print(str(marketData['title']))
+                else:
+                    f.write(str(foo[k])+",")
             except TypeError:
-                f.write("N/A,")
+                f.write("N/A")
                 missingData = True
         if missingData:
             f.write("True\n")
@@ -58,10 +64,3 @@ for x in range(int(page_data['limit'])):
             print("error"+str(foo))
         else:
             f.write("False\n")
-print("Data Collection Complete. "+str(foo)+" NoneType Entries. See sneakerData.csv")
-    #print(page_data['limit'])
-
-
-'''
-Utilize --market-- object identifier for price stuff
-'''
