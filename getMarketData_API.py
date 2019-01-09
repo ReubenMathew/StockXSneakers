@@ -1,6 +1,9 @@
 from urllib.request import urlopen , Request
 import csv
 import json
+import os
+
+
 
 def get_jsonparsed_data(my_url):
 
@@ -11,10 +14,14 @@ def get_jsonparsed_data(my_url):
     response = urlopen(req)
     data = response.read().decode("utf-8")
     return json.loads(data)
+csvFile = "marketData.csv"
+if (os.path.isfile(csvFile)):
+    os.remove(csvFile)
 
-filename = "marketData.csv"
+filename = csvFile
+
 f = open(filename,"w+")
-headers = "title,lowestAsk,lowestAskSize,numberOfAsks,salesThisPeriod,salesLastPeriod,highestBid,highestBidSize,numberOfBids,annualHigh,annualLow,deadstockRangeLow,deadstockRangeHigh,volatility,deadstockSold,pricePremium,averageDeadstockPrice,lastSale,salesLast72Hours,changeValue,changePercentage,totalDollars,deadstockSoldRank,pricePremiumRank,averageDeadstockPriceRank,missingData\n"
+headers = "title,lowestAsk,lowestAskSize,numberOfAsks,salesThisPeriod,highestBid,highestBidSize,numberOfBids,annualHigh,annualLow,deadstockRangeLow,deadstockRangeHigh,volatility,deadstockSold,pricePremium,averageDeadstockPrice,lastSale,salesLast72Hours,changeValue,changePercentage,totalDollars,deadstockSoldRank,pricePremiumRank,averageDeadstockPriceRank,missingData\n"
 f.write(headers)
 
 groups = list(headers.split(","))
@@ -64,3 +71,4 @@ for x in range(int(page_data['limit'])):
             print("error"+str(foo))
         else:
             f.write("False\n")
+print("Data Collected with " +str(foo)+" errors. Please see "+filename)
