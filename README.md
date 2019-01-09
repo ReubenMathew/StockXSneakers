@@ -16,3 +16,4 @@ ToDo:
 2. Explore data
 3. Use the data I guess...
 4. IMPORTANT!!! Move getData_API.py to some hosting thing where it can automatically run and not depend on home internet speeds
+5. Do some repo organization, like folders and stuff
