@@ -21,7 +21,7 @@ if (os.path.isfile(csvFile)):
 filename = csvFile
 
 f = open(filename,"w+")
-headers = "title,lowestAsk,lowestAskSize,numberOfAsks,salesThisPeriod,highestBid,highestBidSize,numberOfBids,annualHigh,annualLow,deadstockRangeLow,deadstockRangeHigh,volatility,deadstockSold,pricePremium,averageDeadstockPrice,lastSale,salesLast72Hours,changeValue,changePercentage,totalDollars,deadstockSoldRank,pricePremiumRank,averageDeadstockPriceRank,missingData\n"
+headers = "title,brand,lowestAsk,lowestAskSize,numberOfAsks,salesThisPeriod,highestBid,highestBidSize,numberOfBids,annualHigh,annualLow,deadstockRangeLow,deadstockRangeHigh,volatility,deadstockSold,pricePremium,averageDeadstockPrice,lastSale,salesLast72Hours,changeValue,changePercentage,totalDollars,deadstockSoldRank,pricePremiumRank,averageDeadstockPriceRank,missingData\n"
 f.write(headers)
 
 groups = list(headers.split(","))
@@ -43,7 +43,7 @@ parsed_data = get_jsonparsed_data(url)
 page_data = parsed_data['Pagination']
 
 
-foo = 0
+bar = 0
 print("Collecting Data")
 for x in range(int(page_data['limit'])):
     url = ("https://stockx.com/api/browse?page="+str(x)+"&productCategory=sneakers")
@@ -60,6 +60,8 @@ for x in range(int(page_data['limit'])):
                 if (k=="title"):
                     f.write(marketData['title']+",")
                     print(str(marketData['title']))
+                elif(k=="brand"):
+                    f.write(marketData['brand']+",")
                 else:
                     f.write(str(foo[k])+",")
             except TypeError:
@@ -67,8 +69,8 @@ for x in range(int(page_data['limit'])):
                 missingData = True
         if missingData:
             f.write("True\n")
-            foo += 1
+            bar += 1
             print("error"+str(foo))
         else:
             f.write("False\n")
-print("Data Collected with " +str(foo)+" errors. Please see "+filename)
+print("Data Collected with " +str(bar)+" errors. Please see "+filename)
